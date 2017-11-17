@@ -11,21 +11,39 @@ using namespace std;
 
 void printVect(vector<CalcLexeme> &);
 void eraseVect(vector<CalcLexeme> &obj, unsigned int);
+int runCalc(vector<CalcLexeme> &);
 
 int main()
 {
+    vector<CalcLexeme> vect;
+
+    runCalc(vect);
+
+    return 0;
+}
+
+void eraseVect(vector<CalcLexeme> &obj, unsigned int i){
+    obj.erase(obj.begin() + i, obj.begin() + i + 2);
+    //obj.erase();
+    printVect(obj);
+}
+
+void printVect(vector<CalcLexeme> & v){
+    for(CalcLexeme out : v)
+        cout << out;
+    cout << "- - - - -"<< endl;
+
+}
+
+int runCalc(vector<CalcLexeme> & vect){
     cout << "inpun your expression: " << endl;
 
     //unsigned int vect_size = 20;
 
-    vector<CalcLexeme> vect;
-    vector<CalcLexeme>::iterator it;
-    it = vect.begin();
-
-    for(string in; cin >> in;){ // fill vector of lexem
+    for(string in; cin >> in ;){ // fill vector of lexem
 
         if(in[0] == 'q')
-            return 0;
+            return 1;
 
         switch (in[0]) {
         case '+':
@@ -59,16 +77,16 @@ int main()
         if(vect[i].GetType() == 'v')
             continue;
         if(vect[i].GetType() == '/'){ // div
-            cout << "div: " << vect[i-1].GetValue() << " / " << vect[i+1].GetValue() << endl;
+            cout << "div: " << vect[i+1].GetValue() << " / " << vect[i-1].GetValue() << endl;
 
-            vect[i-1] = vect[i-1] / vect[i+1];
+            vect[i-1] = vect[i+1] / vect[i-1];
             eraseVect(vect, i);
 
         }
         else if(vect[i].GetType() == '*'){ // mul
-            cout << "mul: " << vect[i-1].GetValue() << " * " << vect[i+1].GetValue() << endl;
+            cout << "mul: " << vect[i+1].GetValue() << " * " << vect[i-1].GetValue() << endl;
 
-            vect[i-1] = vect[i-1] * vect[i+1];
+            vect[i-1] = vect[i+1] * vect[i-1];
             eraseVect(vect, i);
 
         }
@@ -77,9 +95,9 @@ int main()
 
      for(unsigned int i = vect.size() - 1; i > 0; i--){
         if((vect[i].GetType() == '+') || (vect[i].GetType() == '-')){
-            cout << "add: " << vect[i-1].GetValue() << " + " << vect[i+1].GetValue() << endl;
+            cout << "add: " << vect[i+1].GetValue() << " + " << vect[i-1].GetValue() << endl;
 
-            vect[i-1] = vect[i-1] + vect[i+1];
+            vect[i-1] = vect[i+1] + vect[i-1];
             eraseVect(vect, i);
 
         }
@@ -94,20 +112,5 @@ int main()
     }
 
     cout << "res = " << vect[0].GetValue() << endl;
-
-
     return 0;
-}
-
-void eraseVect(vector<CalcLexeme> &obj, unsigned int i){
-    obj.erase(obj.begin() + i, obj.begin() + i + 2);
-    //obj.erase();
-    printVect(obj);
-}
-
-void printVect(vector<CalcLexeme> & v){
-    for(CalcLexeme out : v)
-        cout << out;
-    cout << "- - - - -"<< endl;
-
 }
