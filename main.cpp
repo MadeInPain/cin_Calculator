@@ -10,22 +10,27 @@
 using namespace std;
 
 void printVect(vector<CalcLexeme> &);
+void printHello();
 void eraseVect(vector<CalcLexeme> &obj, unsigned int);
 int runCalc(vector<CalcLexeme> &);
 
 int main()
 {
+    printHello();
+
     vector<CalcLexeme> vect;
 
-    runCalc(vect);
+    while(!runCalc(vect)){
+        ;
+    }
+
 
     return 0;
 }
 
 void eraseVect(vector<CalcLexeme> &obj, unsigned int i){
     obj.erase(obj.begin() + i, obj.begin() + i + 2);
-    //obj.erase();
-    printVect(obj);
+    //printVect(obj);
 }
 
 void printVect(vector<CalcLexeme> & v){
@@ -36,7 +41,7 @@ void printVect(vector<CalcLexeme> & v){
 }
 
 int runCalc(vector<CalcLexeme> & vect){
-    cout << "inpun your expression: " << endl;
+    cout << "inpun your expression:\n " << endl;
 
     //unsigned int vect_size = 20;
 
@@ -62,8 +67,11 @@ int runCalc(vector<CalcLexeme> & vect){
             vect.insert(vect.begin(), CalcLexeme('/'));
             break;
         default:
-            if(stod(in))
-                vect.insert(vect.begin(), CalcLexeme('v', stod(in)));
+            vect.insert(vect.begin(), CalcLexeme('v', stod(in)));
+            if((stod(in) == 0) && (vect[1].GetType() == '/')){
+                cout << "error: div by zero" << endl;
+                return 1;
+            }
             break;
         }
 
@@ -77,40 +85,48 @@ int runCalc(vector<CalcLexeme> & vect){
         if(vect[i].GetType() == 'v')
             continue;
         if(vect[i].GetType() == '/'){ // div
-            cout << "div: " << vect[i+1].GetValue() << " / " << vect[i-1].GetValue() << endl;
+            cout << "div: " << vect[i+1].GetValue() << " / " << vect[i-1].GetValue();
 
             vect[i-1] = vect[i+1] / vect[i-1];
+            cout << " = " << vect[i-1].GetValue() << endl;
             eraseVect(vect, i);
 
         }
         else if(vect[i].GetType() == '*'){ // mul
-            cout << "mul: " << vect[i+1].GetValue() << " * " << vect[i-1].GetValue() << endl;
+            cout << "mul: " << vect[i+1].GetValue() << " * " << vect[i-1].GetValue();
 
             vect[i-1] = vect[i+1] * vect[i-1];
+            cout << " = " << vect[i-1].GetValue() << endl;
             eraseVect(vect, i);
 
         }
 
     }
 
-     for(unsigned int i = vect.size() - 1; i > 0; i--){
+     for(unsigned int i = vect.size() - 1; i > 0; i--){ // add and sub operation
         if((vect[i].GetType() == '+') || (vect[i].GetType() == '-')){
-            cout << "add: " << vect[i+1].GetValue() << " + " << vect[i-1].GetValue() << endl;
+            cout << "add: " << vect[i+1].GetValue() << " + " << vect[i-1].GetValue();
 
             vect[i-1] = vect[i+1] + vect[i-1];
+            cout << " = " << vect[i-1].GetValue() << endl;
             eraseVect(vect, i);
 
         }
-//        else if(vect[i].GetType() == '-'){
-//            cout << "sub: " << vect[i-1].GetValue() << " - " << vect[i+1].GetValue() << endl;
-
-//            vect[i-1] = vect[i-1] + vect[i+1];
-//            eraseVect(vect, i);
-
-//        }
 
     }
 
     cout << "res = " << vect[0].GetValue() << endl;
+    vect.erase(vect.begin());
+    cin.clear();
+
+
     return 0;
+}
+
+void printHello(){
+    cout << endl;
+    cout << "Hello\nUsage: in: 1 + 2 * 3 / 4 ... (with spaces!),\n"
+            "to calculate: type cntr-z on Windows, cntr-d on Linux\n"
+            "negative value doesn't work! (-4 * 2) but 0 - 4 * 2 \n"
+            "to exit: type q " << endl;
 }
